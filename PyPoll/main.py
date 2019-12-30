@@ -8,71 +8,93 @@
 import csv
 import os
 
-csvPath = os.path.join("Resources","election_data.csv")
 
-#Initialize Variables
-totalVotes = 0 #Increment for each vote
-candidates = [] #Array of unique candidates
+def main():
 
-with open(csvPath, mode="r") as csvFile:
-    csvReader = csv.reader(csvFile)
+    csvPath = os.path.join("Resources","election_data.csv")
 
-    # Exclude Header --------------
-    csvHeader = csvReader.next("")
-
-    # Loop Through Contents -------
-    for row in csvReader:
+    with open(csvPath, mode="r") as csvFile:
         
-        totalvotes += 1
-
-        #Initialize dictionary, because I think it represtents a nice way to think about a row.
-        current_row = {
-            "VID" : row[0]
-            "county" : row[1]
-            "candidate" : row[2]
-        }
+        #Initialize Variables
+        candidates = [] #Array of unique candidates
+        VIDs = [] #Array of unique voter Ids
+        totalVotes = 0 #Increment for each vote
+        questionableVoters = [] #Array that will hold all voter IDs that have multiple votes in the sheet
         
-        #If the candidate is not in the candidates array, add it.
-        if( not( current_row["candidate"] in candidates) ):
+        csvReader = csv.reader(csvFile)
 
-            new_candidate = { 
-                            "name" : current_row["candidate"},
-                            "total" : 0,
-                            "VIDs" : [] 
-                            }
+        # Exclude Header --------------
+        next(csvReader)
+
+        # Loop Through Contents -------
+        for row in csvReader:
+
+            #Initialize dictionary, because I think it represtents a nice way to think about a row.
+            current_row = {
+                "VID" : row[0],
+                "county" : row[1],
+                "candidate" : row[2]
+            }
+            
+            #If the candidate is not in the candidates array, add it.
+            if( not( current_row["candidate"] in candidates) ):
+
+                new_candidate = { 
+                                "name" : current_row["candidate"],
+                                "total" : 0,
+                                "VIDs" : [] 
+                                }
+
+                candidates.append( new_candidate )
+
+            #Lookup the entry to the candidate's list
+            matched_candidate = lookupCandidateByName( current_row["candidate"], candidates )
+        #   #Running total ------------
+            
+            #Add to total if they are a new unique voter
+            if ( voterIsUnique(current_row["VID"], VIDs) ):
+                totalVotes += 1
+                matched_candidate["total"] += 1
+                #Add this voter to the candidate's voter list
+                matched_candidate["VIDs"].append( current_row["VID"] )
+                #Add this voter to the list of all voters
+                VIDs.append(current_row["VID"])
+            else: #This voter has multiple votes
+                questionableVoters.append(current_row["VID"])
+
+            print(totalVotes)
+                
 
 
-            candidates = candidates.append( new_candidate )
-        #We know about the candidate at this point. 
-        #Lookup the entry to the candidate's list
-        matched_candidate = lookupCandidateByName( current_row["candidate"], candidates )
-    #   #Running total ------------
-        
-        #Add to total if they are a new unique voter
-        if ( voterIsUnique(VID, UniqueVoters) )
+    # Totals per candidate final readout --------------------
+    print(candidates)
+    # Candidate with highest total ------------
 
-        matched_candidate["total"] += 1
-    #   #Build array of unique candidates -----------
-        Matched_candidate["VIDs"].append( current_row["VID"] )
-    #   #Running Totals per candidate ------------
-
-# Totals per candidate final readout --------------------
-# Candidate with highest total ------------
-
-# Write what you get
+    # Write what you get
 
 # Returns a candidate dict from the list of candidates that matches the one you pass in by name
 def lookupCandidateByName(lookupCandidateName = "none", candidates ="none"):
     
-    if lookupCandidateName == "none" {
-        throw new error("A lookupCandidateName must be specified")
-    }
-    else if candidates == "none"
-        throw new error("An array of candidate dicts must be provided")
+    if lookupCandidateName == "none":
+        print("A lookupCandidateName must be specified")
+        return -1
+    if candidates == "none":
+        print("An array of candidate dicts must be provided")
+        return -1
     
     for candidate in candidates:
-        if(lookupCandidateName == candidate["candidate"] ):
+        if(lookupCandidateName == candidate["name"] ):
             return candidate
 
 #TODO, write this function and use it to filter candidates in the loop
-def voterIsUnique(VID = "none", VIDs = "none")
+def voterIsUnique(VID = "none", VIDs = "none"):
+    if( VID in VIDs ):
+        return False
+    else: 
+        VIDs = VIDs.append(VID)
+        return True
+
+
+
+#Execute main
+main()
