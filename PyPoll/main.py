@@ -11,15 +11,15 @@ import os
 
 def main():
 
+    #Path to the file.  Uncomment second line to test on a smaller set
     csvPath = os.path.join("Resources","election_data.csv")
+    # csvPath = os.path.join("Resources","election_data_test.csv")
 
     with open(csvPath, mode="r") as csvFile:
         
         #Initialize Variables
         candidates = [] #Array of unique candidates
-        VIDs = [] #Array of unique voter Ids
         totalVotes = 0 #Increment for each vote
-        questionableVoters = [] #Array that will hold all voter IDs that have multiple votes in the sheet
         
         csvReader = csv.reader(csvFile)
 
@@ -36,41 +36,42 @@ def main():
                 "candidate" : row[2]
             }
             
+            matched_candidate = lookupCandidateByName( current_row["candidate"], candidates )
+
             #If the candidate is not in the candidates array, add it.
-            if( not( current_row["candidate"] in candidates) ):
+            if( not( matched_candidate) ):
 
                 new_candidate = { 
                                 "name" : current_row["candidate"],
                                 "total" : 0,
-                                "VIDs" : [] 
+                                "counties" : {}
                                 }
 
                 candidates.append( new_candidate )
+                matched_candidate = lookupCandidateByName( current_row["candidate"], candidates )
 
-            #Lookup the entry to the candidate's list
-            matched_candidate = lookupCandidateByName( current_row["candidate"], candidates )
-        #   #Running total ------------
             
-            #Add to total if they are a new unique voter
-            if ( voterIsUnique(current_row["VID"], VIDs) ):
-                totalVotes += 1
-                matched_candidate["total"] += 1
-                #Add this voter to the candidate's voter list
-                matched_candidate["VIDs"].append( current_row["VID"] )
-                #Add this voter to the list of all voters
-                VIDs.append(current_row["VID"])
-            else: #This voter has multiple votes
-                questionableVoters.append(current_row["VID"])
+            totalVotes += 1
+            matched_candidate["total"] += 1
 
-            print(totalVotes)
+            #If this row's county isn't already represented on the matched candidate, add it
+            if( not( current_row["county"] in matched_candidate["counties"] ) ):
+                matched_candidate["counties"][current_row["county"]] = 0
+
+            #Increment the candidate's total per county
+            matched_candidate["counties"][current_row["county"]] += 1
                 
+    output = buildOutputString(candidates, totalVotes)
 
+    print(output)
 
-    # Totals per candidate final readout --------------------
-    print(candidates)
-    # Candidate with highest total ------------
+    # Write to text file
+    with open("election_results.txt", mode="w") as resultFile:
+        resultFile.write(output)
 
-    # Write what you get
+#---------------------------------------------------------------------------------------------
+# Helper function definitions
+# --------------------------------------------------------------------------------------------        
 
 # Returns a candidate dict from the list of candidates that matches the one you pass in by name
 def lookupCandidateByName(lookupCandidateName = "none", candidates ="none"):
@@ -86,14 +87,33 @@ def lookupCandidateByName(lookupCandidateName = "none", candidates ="none"):
         if(lookupCandidateName == candidate["name"] ):
             return candidate
 
-#TODO, write this function and use it to filter candidates in the loop
-def voterIsUnique(VID = "none", VIDs = "none"):
-    if( VID in VIDs ):
-        return False
-    else: 
-        VIDs = VIDs.append(VID)
-        return True
+    #If not found return false
+    return False
 
+def buildOutputString(candidates, totalVotes):
+    output = "Election Results \n"
+    output += '---------------------------- \n'
+    output += f"Total Votes: {totalVotes} \n"
+    output += '---------------------------- \n'
+
+    winner = {"name" : "none", "total" : -1}
+
+    #Loop through each candidate: 
+    for candidate in candidates:
+        if( winner["total"] < candidate["total"]):
+            winner = candidate
+
+        percentage = float(candidate["total"]) / totalVotes
+        percentage *= 100
+        percentage = round(percentage,2)
+        # Totals per candidate final readout --------------------
+        output += f"{candidate['name']}: %{percentage} ({candidate['total']}) \n"
+        
+    # Candidate with highest total ------------
+    output += "----------------------------\n"
+    output += f"Winner: {winner['name']}\n"
+
+    return output
 
 
 #Execute main
