@@ -2,9 +2,66 @@ Election Results
 ---------------------------- 
 Total Votes: 3521001 
 ---------------------------- 
-Khan: 63.00 (2218231) 
-Correy: 20.00 (704200) 
-Li: 14.00 (492940) 
-O'Tooley: 3.00 (105630) 
+Khan: %63.00 (2218231) 
+Correy: %20.00 (704200) 
+Li: %14.00 (492940) 
+O'Tooley: %3.00 (105630) 
 ----------------------------
 Winner: Khan
+
+
+---------------------------- 
+Candidate Votes Per County 
+---------------------------- 
+Khan : Total Votes: 2218231 
+    Marsh: %64.34 (1427142) 
+    Queen: %19.81 (439494) 
+    Trandee: %2.97 (65939) 
+    Raffah: %2.97 (65822) 
+    Bamoo: %9.91 (219834) 
+Correy : Total Votes: 704200 
+    Marsh: %64.33 (453015) 
+    Queen: %19.82 (139554) 
+    Bamoo: %9.91 (69752) 
+    Raffah: %2.99 (21055) 
+    Trandee: %2.96 (20824) 
+Li : Total Votes: 492940 
+    Marsh: %64.44 (317651) 
+    Bamoo: %9.87 (48639) 
+    Queen: %19.74 (97305) 
+    Raffah: %2.96 (14604) 
+    Trandee: %2.99 (14741) 
+O'Tooley : Total Votes: 105630 
+    Bamoo: %9.88 (10433) 
+    Queen: %19.74 (20850) 
+    Marsh: %64.52 (68149) 
+    Trandee: %2.95 (3113) 
+    Raffah: %2.92 (3085) 
+---------------------------- 
+Breakdown by County 
+---------------------------- 
+Marsh : Total Votes: 2265957 
+    Khan: %62.98 (1427142) 
+    Correy: %19.99 (453015) 
+    Li: %14.02 (317651) 
+    O'Tooley: %3.01 (68149) 
+Queen : Total Votes: 697203 
+    Khan: %63.04 (439494) 
+    Correy: %20.02 (139554) 
+    Li: %13.96 (97305) 
+    O'Tooley: %2.99 (20850) 
+Trandee : Total Votes: 104617 
+    Khan: %63.03 (65939) 
+    Correy: %19.90 (20824) 
+    Li: %14.09 (14741) 
+    O'Tooley: %2.98 (3113) 
+Raffah : Total Votes: 104566 
+    Khan: %62.95 (65822) 
+    Correy: %20.14 (21055) 
+    Li: %13.97 (14604) 
+    O'Tooley: %2.95 (3085) 
+Bamoo : Total Votes: 348658 
+    Khan: %63.05 (219834) 
+    Correy: %20.01 (69752) 
+    Li: %13.95 (48639) 
+    O'Tooley: %2.99 (10433) 

@@ -61,7 +61,8 @@ def main():
             matched_candidate["counties"][current_row["county"]] += 1
                 
     output = buildOutputString(candidates, totalVotes)
-
+    output += '\n\n'
+    output += buildCountyBreakdown(candidates)
     print(output)
 
     # Write to text file
@@ -117,7 +118,53 @@ def buildOutputString(candidates, totalVotes):
 
     return output
 
+def buildCountyBreakdown(candidates):
+    output = '---------------------------- \n'
+    output += 'Candidate Votes Per County \n'
+    output += '---------------------------- \n'
 
+    countyBreakdown = {}
+
+    # Build the output string and collate data by county for later
+    for candidate in candidates:
+        output += f'{candidate["name"]} : Total Votes: {candidate["total"]} \n'
+        for county in candidate["counties"]:
+
+            countyTotal = candidate['counties'][county]
+
+            # Build Dict that breaks down data by county
+            if ( not(county in countyBreakdown) ):
+                countyBreakdown[county] = {"total" : 0}
+
+            countyBreakdown[county][candidate["name"]] = countyTotal 
+            countyBreakdown[county]["total"] += countyTotal
+
+            candidatePercent = float(countyTotal) / candidate["total"]
+            candidatePercent *= 100
+            candidatePercent = round(candidatePercent,2)
+            # Totals per candidate final readout --------------------
+            # Format to read out two decimal places
+            output += f"    {county}: %{'%.2f' % candidatePercent} ({countyTotal}) \n"
+
+    output += '---------------------------- \n'
+    output += 'Breakdown by County \n'
+    output += '---------------------------- \n'
+
+    for county in countyBreakdown:
+        countyTotal = countyBreakdown[county]["total"]
+        output += f'{county} : Total Votes: {countyTotal} \n'
+
+        for candidate in countyBreakdown[county]:
+            #Don't print out the total
+            if candidate == "total" : continue
+            
+            percentage = float(countyBreakdown[county][candidate]) / countyTotal
+            percentage *= 100
+            percentage = round(percentage, 2)
+            output += f"    {candidate}: %{'%.2f' % percentage} ({countyBreakdown[county][candidate]}) \n"            
+
+    return output
+    
 
 
 #Execute main
