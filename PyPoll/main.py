@@ -8,7 +8,6 @@
 import csv
 import os
 
-
 def main():
 
     #Path to the file.  Uncomment second line to test on a smaller set
@@ -90,6 +89,7 @@ def lookupCandidateByName(lookupCandidateName = "none", candidates ="none"):
     #If not found return false
     return False
 
+#Creates an output string that fits minimum requirements
 def buildOutputString(candidates, totalVotes):
     output = "Election Results \n"
     output += '---------------------------- \n'
@@ -103,17 +103,21 @@ def buildOutputString(candidates, totalVotes):
         if( winner["total"] < candidate["total"]):
             winner = candidate
 
-        percentage = float(candidate["total"]) / totalVotes
+        #Careful to do floating point maths
+        percentage = float(candidate["total"]) / float(totalVotes)
         percentage *= 100
         percentage = round(percentage,2)
         # Totals per candidate final readout --------------------
-        output += f"{candidate['name']}: %{percentage} ({candidate['total']}) \n"
+        # Format to read out two decimal places
+        output += f"{candidate['name']}: %{'%.2f' % percentage} ({candidate['total']}) \n"
         
     # Candidate with highest total ------------
     output += "----------------------------\n"
     output += f"Winner: {winner['name']}\n"
 
     return output
+
+
 
 
 #Execute main
