@@ -13,8 +13,10 @@ with open(csvpath, newline='') as csvfile:
     first_row = next(csvreader)
     nMonths = 1
     totalProfits = float(first_row[1])
+    totalProfitDiff = 0
     bestMonth = {"date": first_row[0], "profit": totalProfits}
     worstMonth = {"date": first_row[0], "profit": totalProfits}
+    lastMonthProfit = totalProfits
 
     #Loop through each row in the csv
     for row in csvreader :
@@ -22,21 +24,27 @@ with open(csvpath, newline='') as csvfile:
         profit = float(row[1])
         totalProfits+=profit
 
+        # Add the current profit diff to the total profit diff.
+        totalProfitDiff += (profit - lastMonthProfit)
+
         if( profit > bestMonth["profit"]):
             bestMonth = {"date" : row[0], "profit": profit}
             
         if ( profit < worstMonth["profit"]):
             worstMonth = {"date" : row[0], "profit": profit}
 
-    averageProfit = totalProfits / nMonths
-    averageProfit = round(averageProfit,2)
+        lastMonthProfit = profit
+
+    averageProfitDiff = totalProfitDiff / nMonths
+    averageProfitDiff = round(averageProfitDiff,2)
 
     output = ""
     #Build the output string
     output+="Financial Analysis \n"
     output+="---------------------------- \n"
     output+=f"Total Months: {nMonths} \n"
-    output+=f"Average Change: {averageProfit} \n"
+    output+=f"Total Profit/Loss Over Period: {totalProfits} \n"
+    output+=f"Average Profit Change: {'%.2f' % averageProfitDiff} \n"
 
     #Adjust output language for the user.
     if(bestMonth["profit"] > 0 ):
